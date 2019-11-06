@@ -104,6 +104,68 @@
             <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
@@ -126,7 +188,18 @@
         </header>
 
         <div class="post-content">
-            
+            <h2 id="打开一个新标签页的方式"><a href="#打开一个新标签页的方式" class="headerlink" title="打开一个新标签页的方式"></a>打开一个新标签页的方式</h2><ul>
+<li>通过a标签 <code>&lt;a href=&#39;&#39; target=&quot;_blank&quot;&gt;</code></li>
+<li>window.open() 方式</li>
+</ul>
+<p>在一个异步请求中，使用这两种方式打开新页面会触发浏览器的拦截机制，要打开的页面会被拦截掉；然而在非异步的方式打开新页面不会受到影响；<br>举个大概例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">redirectNewPage = async() &#123;</span><br><span class="line">	await http.get();</span><br><span class="line">	window.open(&apos;http://www.baidu.com&apos;)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种异步方式，如果浏览器打开了拦截，页面会被拦截掉</p>
+<h2 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h2><p>这里针对window.open方式打开新页面的解决方式，但是方法不是很完美</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">redirectNewPage = async() &#123;</span><br><span class="line">	const newPage = window.open(); 在发起请求前先打开一个新窗口</span><br><span class="line">	await http.get();</span><br><span class="line">	&lt;!-- window.open(&apos;http://www.baidu.com&apos;) --&gt;</span><br><span class="line">	newPage.location.href = &apos;http://www.baidu.com&apos;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里有针对各个浏览器的总结【<a href="https://juejin.im/post/5bdee507e51d4567953e6cdd】" target="_blank" rel="noopener">https://juejin.im/post/5bdee507e51d4567953e6cdd】</a></p>
+
         </div>
 
         
@@ -135,12 +208,6 @@
                     <p class="copyright-item">
                         <span>Author:</span>
                         <span>孔磊</span>
-                    </p>
-                
-                
-                    <p class="copyright-item">
-                        <span>Permalink:</span>
-                        <span><a href="https://dannisi.github.io/2019/11/06/%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E4%B8%AD%E6%89%93%E5%BC%80%E6%96%B0%E7%AA%97%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/">https://dannisi.github.io/2019/11/06/%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E4%B8%AD%E6%89%93%E5%BC%80%E6%96%B0%E7%AA%97%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/</a></span>
                     </p>
                 
                 
@@ -167,8 +234,6 @@
         </section>
         <section class="post-nav">
             
-            
-            <a class="next" rel="next" href="/2019/10/18/A-new-post/">A new post</a>
             
         </section>
 
